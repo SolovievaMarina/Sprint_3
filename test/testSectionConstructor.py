@@ -1,36 +1,84 @@
-class testSectionConstructor:
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 
-    from selenium.webdriver.common.by import By
-    from selenium import webdriver
-    from selenium.webdriver.support.wait import WebDriverWait
-    from selenium.webdriver.support import expected_conditions
+class TestSectionConstructor:
+    def setup(self):
+        options = Options()
+        options.add_argument("no-sandbox")
+        options.add_argument("--window-size=800,600")
 
-    driver = webdriver.Chrome()
-    driver.get("https://stellarburgers.nomoreparties.site/")
+        self.driver = webdriver.Chrome(options=options)
+        self.driver.implicitly_wait(5)
 
-    #ожидаем появления кнопки "Войти в аккаунт"
-    WebDriverWait(driver, 3).until(
-        expected_conditions.visibility_of_element_located((By.XPATH, "//button[contains(text(),'Войти в аккаунт')]")))
+    # Проверка 1. Переход к разделу "Соусы"
+    def test_switching_to_sauces_section(self):
+        self.driver.get("https://stellarburgers.nomoreparties.site")
 
-    #нажимаем "Войти в аккаунт"
-    driver.find_element(By.XPATH, "//button[contains(text(),'Войти в аккаунт')]").click()
+        # нажимаем "Войти в аккаунт"
+        self.driver.find_element(By.XPATH, "//button[contains(text(),'Войти в аккаунт')]").click()
 
-    #вводим логин/пароль
-    driver.find_element(By.XPATH, "//body/div[@id='root']/div[1]/main[1]/div[1]/form[1]/fieldset[1]/div[1]/div[1]/input[1]").send_keys("marinasolovieva2777@yandex.ru")
-    driver.find_element(By.XPATH, "//body/div[@id='root']/div[1]/main[1]/div[1]/form[1]/fieldset[2]/div[1]/div[1]/input[1]").send_keys("123456")
+        # вводим логин/пароль
+        self.driver.find_element(By.XPATH, "//body/div[@id='root']/div[1]/main[1]/div[1]/form[1]/fieldset[1]/div[1]/div[1]/input[1]").send_keys("marinasolovieva2777@yandex.ru")
+        self.driver.find_element(By.XPATH, "//body/div[@id='root']/div[1]/main[1]/div[1]/form[1]/fieldset[2]/div[1]/div[1]/input[1]").send_keys("123456")
 
-    #нажимаем "Войти"
-    driver.find_element(By.XPATH, "//button[contains(text(),'Войти')]").click()
+        # нажимаем "Войти"
+        self.driver.find_element(By.XPATH, "//button[contains(text(),'Войти')]").click()
 
-    # Ожидаем появления вкладки "Соусы"
-    WebDriverWait(driver, 3).until(
-        expected_conditions.visibility_of_element_located((By.XPATH, "//span[contains(text(),'Соусы')]")))
+        # переходим на вкладку Соусы
+        self.driver.find_element(By.XPATH, "//span[contains(text(),'Соусы')]").click()
 
-    # Тест 1. Проверить переход к разделу "Соусы"
-    driver.find_element(By.XPATH, "//span[contains(text(),'Соусы')]").click()
+        # ожидаем появления элемента "Соус фирменный"
+        assert self.driver.find_element(By.XPATH, "//p[contains(text(),'Соус фирменный Space Sauce')]")
 
-    # Тест 2. Проверить переход к разделу "Булки"
-    driver.find_element(By.XPATH, "//span[contains(text(),'Булки')]").click()
 
-    # Тест 3. Проверить переход к разделу "Начинки"
-    driver.find_element(By.XPATH, "//span[contains(text(),'Начинки')]").click()
+    # Проверка 2. Переход к разделу "Булки"
+
+    def test_switching_to_bread_section(self):
+        self.driver.get("https://stellarburgers.nomoreparties.site")
+
+        # нажимаем "Войти в аккаунт"
+        self.driver.find_element(By.XPATH, "//button[contains(text(),'Войти в аккаунт')]").click()
+
+        # вводим логин/пароль
+        self.driver.find_element(By.XPATH, "//body/div[@id='root']/div[1]/main[1]/div[1]/form[1]/fieldset[1]/div[1]/div[1]/input[1]").send_keys("marinasolovieva2777@yandex.ru")
+        self.driver.find_element(By.XPATH, "//body/div[@id='root']/div[1]/main[1]/div[1]/form[1]/fieldset[2]/div[1]/div[1]/input[1]").send_keys("123456")
+
+        # нажимаем "Войти"
+        self.driver.find_element(By.XPATH, "//button[contains(text(),'Войти')]").click()
+
+        # переходим на вкладку Соусы (тк по умолчанию уже находимся на вкладке Булки)
+        self.driver.find_element(By.XPATH, "//span[contains(text(),'Соусы')]").click()
+
+        # переходим к разделу "Булки"
+        self.driver.find_element(By.XPATH, "//span[contains(text(),'Булки')]").click()
+
+        # ожидаем появления элемента 'Флюоресцентная булка R2-D3'
+        assert self.driver.find_element(By.XPATH, "//p[contains(text(),'Флюоресцентная булка R2-D3')]")
+
+
+    # Проверка 3. Переход к разделу "Начинки"
+
+    def test_switching_to_fillings_section(self):
+        self.driver.get("https://stellarburgers.nomoreparties.site")
+
+        # нажимаем "Войти в аккаунт"
+        self.driver.find_element(By.XPATH, "//button[contains(text(),'Войти в аккаунт')]").click()
+
+        # вводим логин/пароль
+        self.driver.find_element(By.XPATH, "//body/div[@id='root']/div[1]/main[1]/div[1]/form[1]/fieldset[1]/div[1]/div[1]/input[1]").send_keys("marinasolovieva2777@yandex.ru")
+        self.driver.find_element(By.XPATH, "//body/div[@id='root']/div[1]/main[1]/div[1]/form[1]/fieldset[2]/div[1]/div[1]/input[1]").send_keys("123456")
+
+        # нажимаем "Войти"
+        self.driver.find_element(By.XPATH, "//button[contains(text(),'Войти')]").click()
+
+        # переходим к разделу "Начинки"
+        self.driver.find_element(By.XPATH, "//span[contains(text(),'Начинки')]").click()
+
+        # ожидаем появления элемента 'Говяжий метеорит (отбивная)'
+        assert self.driver.find_element(By.XPATH, "//p[contains(text(),'Говяжий метеорит (отбивная)')]")
+
+    def teardown(self):
+        print('CLOSE')
+        self.driver.close()
+        self.driver.quit()
